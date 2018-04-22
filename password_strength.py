@@ -19,55 +19,36 @@ def get_dictionary(common_used_passwords_file):
     return common_used_passwords
 
 
-def is_digit_in_password(password):
-    return re.search('\d', password)
-
-
-def is_lowcase_character_in_password(password):
-    return re.search('[a-zа-я]', password)
-
-
-def is_uppercase_character_in_password(password):
-    return re.search('[A-ZА-Я]', password)
-
-
-def is_special_character_in_password(password):
-    return re.search('[!"#$%&()*+,-./:;<=>?@\^_`{|}~\'\]\[]', password)
-
-
 def is_password_length_good(password):
     min_pass_length = 8
     return len(password) > min_pass_length
 
 
-def is_password_in_dictionary(password, dictionary):
-    return password in dictionary
+def get_password_strength(password, dictionary):
+    password_estimate = 0
+    patterns = [
+        '\d',
+        '[a-zа-я]',
+        '[A-ZА-Я]',
+        '\W',
+    ]
 
+    for pattern in patterns:
+        if re.search(pattern, password):
+            password_estimate += 1
+
+    if is_password_length_good(password):
+        password_estimate += 2
+
+    if dictionary and password not in dictionary:
+        password_estimate += 4
+
+    return password_estimate
 
 if __name__ == '__main__':
     password_estimate = 0
     args = get_argument()
     dictionary = get_dictionary(args.dict)
     password = input("Enter the password: ")
-
-    if is_lowcase_character_in_password(password):
-        password_estimate += 1
-
-    if is_uppercase_character_in_password(password):
-        password_estimate += 1
-
-    if is_digit_in_password(password):
-        password_estimate += 2
-
-    if is_password_length_good(password):
-        password_estimate += 2
-
-    if is_special_character_in_password(password):
-        password_estimate += 2
-
-    if dictionary:
-        if is_password_in_dictionary(password, dictionary):
-            password_estimate += 2
-
-
+    password_estimate = get_password_strength(password, dictionary)
     print('Password estimate: ', password_estimate)
