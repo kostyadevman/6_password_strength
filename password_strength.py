@@ -29,37 +29,17 @@ def get_password_strength(password, common_used_passwords):
         pass_estimate += 1
 
     if len(password) > min_pass_length:
-        pass_estimate += 2
+        pass_estimate += 1
 
     if any(char.islower() for char in password) and \
         any(char.isupper() for char in password):
-        pass_estimate += 1
+        pass_estimate += 2
 
     if any(char.isdigit() for char in password):
-        pass_estimate += 1
+        pass_estimate += 2
 
     if any(char in special_characters for char in password):
-        pass_estimate += 1
-
-    # more than 2 identical characters
-    identical_character_count = 0
-    for char_number in range(len(password)-2):
-        if (password[char_number] == password[char_number+1] ==
-                password[char_number + 2]):
-            identical_character_count += 1
-    if identical_character_count == 0:
-        pass_estimate += 1
-
-    # more than 2 consecutive characters
-    consecutive_character_count = 0
-    for char_number in range(0, len(password)-2):
-        three_consec_char = password[char_number:char_number + 3]
-        if three_consec_char in ascii_lowercase or \
-                three_consec_char in ascii_uppercase or \
-                three_consec_char in digits:
-            consecutive_character_count += 1
-    if consecutive_character_count == 0:
-        pass_estimate += 1
+        pass_estimate += 2
 
     if common_used_passwords:
         if password not in common_used_passwords:
