@@ -43,12 +43,12 @@ def get_password_strength(password, common_used_passwords):
 
     # more than 2 identical characters
     identical_character_count = 0
-    for char_number in range(0, len(password)-2):
+    for char_number in range(len(password)-2):
         if (password[char_number] == password[char_number+1] ==
                 password[char_number + 2]):
             identical_character_count += 1
     if identical_character_count == 0:
-            pass_estimate += 1
+        pass_estimate += 1
 
     # more than 2 consecutive characters
     consecutive_character_count = 0
