@@ -1,6 +1,6 @@
 import os
 from string import punctuation, digits
-from string import ascii_lowercase, ascii_uppercase
+import re
 import argparse
 
 
@@ -23,7 +23,6 @@ def get_dictionary(common_used_passwords_file):
 def get_password_strength(password, common_used_passwords):
     min_pass_length = 8
     special_characters = set(punctuation)
-
     pass_estimate = 0
     if password != '':
         pass_estimate += 1
@@ -31,11 +30,13 @@ def get_password_strength(password, common_used_passwords):
     if len(password) > min_pass_length:
         pass_estimate += 1
 
-    if any(char.islower() for char in password) and \
-        any(char.isupper() for char in password):
-        pass_estimate += 2
+    if re.search('[A-ZА-Я]', password):
+        pass_estimate += 1
 
-    if any(char.isdigit() for char in password):
+    if re.search('[a-zа-я]', password):
+        pass_estimate += 1
+
+    if re.search('\d', password):
         pass_estimate += 2
 
     if any(char in special_characters for char in password):
