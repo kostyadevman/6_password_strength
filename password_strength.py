@@ -19,39 +19,55 @@ def get_dictionary(common_used_passwords_file):
     return common_used_passwords
 
 
-def get_password_strength(password, common_used_passwords):
+def is_digit_in_password(password):
+    return re.search('\d', password)
+
+
+def is_lowcase_character_in_password(password):
+    return re.search('[a-zа-я]', password)
+
+
+def is_uppercase_character_in_password(password):
+    return re.search('[A-ZА-Я]', password)
+
+
+def is_special_character_in_password(password):
+    return re.search('[!"#$%&()*+,-./:;<=>?@\^_`{|}~\'\]\[]', password)
+
+
+def is_password_length_good(password):
     min_pass_length = 8
-    pass_estimate = 0
+    return len(password) > min_pass_length
 
-    if password != '':
-        pass_estimate += 1
 
-    if len(password) > min_pass_length:
-        pass_estimate += 1
-
-    if re.search('[A-ZА-Я]', password):
-        pass_estimate += 1
-
-    if re.search('[a-zа-я]', password):
-        pass_estimate += 1
-
-    if re.search('\d', password):
-        pass_estimate += 2
-
-    if re.search('[!"#$%&()*+,-./:;<=>?@\^_`{|}~\'\]\[]', password):
-        pass_estimate += 2
-
-    if common_used_passwords:
-        if password not in common_used_passwords:
-            pass_estimate += 2
-
-    return pass_estimate
+def is_password_in_dictionary(password, dictionary):
+    return password in dictionary
 
 
 if __name__ == '__main__':
+    password_estimate = 0
     args = get_argument()
-    print(args.dict)
     dictionary = get_dictionary(args.dict)
     password = input("Enter the password: ")
-    pass_estimate = get_password_strength(password, dictionary)
-    print('Password estimate: ', pass_estimate)
+
+    if is_lowcase_character_in_password(password):
+        password_estimate += 1
+
+    if is_uppercase_character_in_password(password):
+        password_estimate += 1
+
+    if is_digit_in_password(password):
+        password_estimate += 2
+
+    if is_password_length_good(password):
+        password_estimate += 2
+
+    if is_special_character_in_password(password):
+        password_estimate += 2
+
+    if dictionary:
+        if is_password_in_dictionary(password, dictionary):
+            password_estimate += 2
+
+
+    print('Password estimate: ', password_estimate)
