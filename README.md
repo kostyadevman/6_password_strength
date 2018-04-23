@@ -7,9 +7,9 @@ The script requires the installed Python interpreter version 3.5
 Example of script launch on Linux, Python 3.5:
 
 ````bash
-$ python password_strength.py --dict [ path to dictionary ]
+$ python password_strength.py --blacklist [ path to dictionary ]
 Enter the password: your_super_puper_password
-Password estimate:  6
+Password estimate:  7
 ````
 
 # Project Goals

@@ -1,15 +1,21 @@
 import os
 import re
 import argparse
+import getpass
 
 
-def get_argument():
+def get_arguments():
     parser = argparse.ArgumentParser('Password strength')
-    parser.add_argument('--dict', type=str)
+    parser.add_argument(
+        '-b',
+        '--blacklist',
+        type=str,
+        help='file with most common passwords'
+    )
     return parser.parse_args()
 
 
-def get_dictionary(common_used_passwords_file):
+def get_blacklist(common_used_passwords_file):
     if not common_used_passwords_file:
         return None
     if not os.path.isfile(common_used_passwords_file):
@@ -24,7 +30,7 @@ def is_password_length_good(password):
     return len(password) > min_pass_length
 
 
-def get_password_strength(password, dictionary):
+def get_password_strength(password, blacklist):
     password_estimate = 0
     patterns = [
         '\d',
@@ -40,15 +46,15 @@ def get_password_strength(password, dictionary):
     if is_password_length_good(password):
         password_estimate += 2
 
-    if dictionary and password not in dictionary:
+    if blacklist and password not in blacklist:
         password_estimate += 4
 
     return password_estimate
 
 if __name__ == '__main__':
     password_estimate = 0
-    args = get_argument()
-    dictionary = get_dictionary(args.dict)
-    password = input("Enter the password: ")
-    password_estimate = get_password_strength(password, dictionary)
+    args = get_arguments()
+    blacklist = get_blacklist(args.blacklist)
+    password = getpass.getpass(prompt='Enter the password: ')
+    password_estimate = get_password_strength(password, blacklist)
     print('Password estimate: ', password_estimate)
